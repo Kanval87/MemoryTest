@@ -67,7 +67,7 @@ public class GameBoard extends Fragment {
                 final int finalJ = j;
                 animatorFlipInSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_in);
                 animatorFlipOutSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_out);
-                animatorFlipInSets[finalI][finalJ].addListener(new AnimationListenerClass(cardViews[finalI][finalJ], animatorFlipOutSets[finalI][finalJ]));
+                animatorFlipInSets[finalI][finalJ].addListener(new AnimationListenerClass(cardViews[finalI][finalJ], animatorFlipOutSets[finalI][finalJ], animatorFlipOutSets[finalI][finalJ]));
                 cardViews[finalI][finalJ].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -84,11 +84,13 @@ public class GameBoard extends Fragment {
     class AnimationListenerClass implements Animator.AnimatorListener {
 
         private AppCompatImageView appCompatImageView;
-        private AnimatorSet animatorSet;
+        private AnimatorSet animatorFlipInSet;
+        private AnimatorSet animatorFlipOutSet;
 
-        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorSet) {
+        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorFlipInSet, AnimatorSet animatorFlipOutSet) {
             this.appCompatImageView = appCompatImageView;
-            this.animatorSet = animatorSet;
+            this.animatorFlipInSet = animatorFlipInSet;
+            this.animatorFlipOutSet = animatorFlipOutSet;
         }
 
         @Override
@@ -99,8 +101,30 @@ public class GameBoard extends Fragment {
         @Override
         public void onAnimationEnd(Animator animation) {
             appCompatImageView.setImageResource(R.drawable.colour1);
-            animatorSet.setTarget(appCompatImageView);
-            animatorSet.start();
+            animatorFlipInSet.setTarget(appCompatImageView);
+            animatorFlipInSet.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    appCompatImageView.setImageResource(R.drawable.card_bg);
+                    animatorFlipOutSet.setTarget(appCompatImageView);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animatorFlipInSet.start();
         }
 
         @Override
