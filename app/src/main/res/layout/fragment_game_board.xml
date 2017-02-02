@@ -1,0 +1,153 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kanvalkalra.colormemory.fragments.GameBoard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorAccent"></LinearLayout>
+
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:columnCount="4"
+        app:rowCount="4">
+
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r1c1"
+            android:background="#54ffe2"
+            app:layout_column="0"
+            app:layout_columnWeight="1"
+            app:layout_row="0"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r1c2"
+            android:background="#546eff"
+            app:layout_column="1"
+            app:layout_columnWeight="1"
+            app:layout_row="0"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r1c3"
+            android:background="#ff54eb"
+            app:layout_column="2"
+            app:layout_columnWeight="1"
+            app:layout_row="0"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r1c4"
+            android:background="#ff5462"
+            app:layout_column="3"
+            app:layout_columnWeight="1"
+            app:layout_row="0"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r2c1"
+            android:background="#ffd754"
+            app:layout_column="0"
+            app:layout_columnWeight="1"
+            app:layout_row="1"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r2c2"
+            android:background="#54ff7f"
+            app:layout_column="1"
+            app:layout_columnWeight="1"
+            app:layout_row="1"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r2c3"
+            android:background="#ff8754"
+            app:layout_column="2"
+            app:layout_columnWeight="1"
+            app:layout_row="1"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r2c4"
+            android:background="#54ffd1"
+            app:layout_column="3"
+            app:layout_columnWeight="1"
+            app:layout_row="1"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r3c1"
+            android:background="#54ffe2"
+            app:layout_column="0"
+            app:layout_columnWeight="1"
+            app:layout_row="2"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r3c2"
+            android:background="#546eff"
+            app:layout_column="1"
+            app:layout_columnWeight="1"
+            app:layout_row="2"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r3c3"
+            android:background="#ff54eb"
+            app:layout_column="2"
+            app:layout_columnWeight="1"
+            app:layout_row="2"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r3c4"
+            android:background="#ff5462"
+            app:layout_column="3"
+            app:layout_columnWeight="1"
+            app:layout_row="2"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r4c1"
+            android:background="#ffd754"
+            app:layout_column="0"
+            app:layout_columnWeight="1"
+            app:layout_row="3"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r4c2"
+            android:background="#54ff7f"
+            app:layout_column="1"
+            app:layout_columnWeight="1"
+            app:layout_row="3"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r4c3"
+            android:background="#ff8754"
+            app:layout_column="2"
+            app:layout_columnWeight="1"
+            app:layout_row="3"
+            app:layout_rowWeight="1" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/r4c4"
+            android:background="#54ffd1"
+            app:layout_column="3"
+            app:layout_columnWeight="1"
+            app:layout_row="3"
+            app:layout_rowWeight="1" />
+
+    </android.support.v7.widget.GridLayout>
+
+
+</LinearLayout>
