@@ -1,6 +1,7 @@
 package com.kanvalkalra.colormemory.fragments;
 
 
+import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.Fragment;
@@ -57,21 +58,60 @@ public class GameBoard extends Fragment {
         cardViews[3][2] = (AppCompatImageView) view.findViewById(R.id.r4c3);
         cardViews[3][3] = (AppCompatImageView) view.findViewById(R.id.r4c4);
 
-        final AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip);
+        final AnimatorSet[][] animatorFlipInSets = new AnimatorSet[4][4];
+        final AnimatorSet[][] animatorFlipOutSets = new AnimatorSet[4][4];
 
         for (int i = 0; i < (cardViews.length); i++) {
             for (int j = 0; j < cardViews[0].length; j++) {
-                cardViews[i][j].setOnClickListener(new View.OnClickListener() {
+                final int finalI = i;
+                final int finalJ = j;
+                animatorFlipInSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_in);
+                animatorFlipOutSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_out);
+                animatorFlipInSets[finalI][finalJ].addListener(new AnimationListenerClass(cardViews[finalI][finalJ], animatorFlipOutSets[finalI][finalJ]));
+                cardViews[finalI][finalJ].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        animatorSet.setTarget(v);
-                        animatorSet.start();
+                        animatorFlipInSets[finalI][finalJ].setTarget(v);
+                        animatorFlipInSets[finalI][finalJ].start();
                     }
                 });
             }
         }
 
 
+    }
+
+    class AnimationListenerClass implements Animator.AnimatorListener {
+
+        private AppCompatImageView appCompatImageView;
+        private AnimatorSet animatorSet;
+
+        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorSet) {
+            this.appCompatImageView = appCompatImageView;
+            this.animatorSet = animatorSet;
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            appCompatImageView.setImageResource(R.drawable.colour1);
+            animatorSet.setTarget(appCompatImageView);
+            animatorSet.start();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
     }
 
 
