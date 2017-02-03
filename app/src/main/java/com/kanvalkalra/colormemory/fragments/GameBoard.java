@@ -61,36 +61,73 @@ public class GameBoard extends Fragment {
         final AnimatorSet[][] animatorFlipInSets = new AnimatorSet[4][4];
         final AnimatorSet[][] animatorFlipOutSets = new AnimatorSet[4][4];
 
+
         for (int i = 0; i < (cardViews.length); i++) {
             for (int j = 0; j < cardViews[0].length; j++) {
                 final int finalI = i;
                 final int finalJ = j;
                 animatorFlipInSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_in);
                 animatorFlipOutSets[finalI][finalJ] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_out);
-                animatorFlipInSets[finalI][finalJ].addListener(new AnimationListenerClass(cardViews[finalI][finalJ], animatorFlipOutSets[finalI][finalJ], animatorFlipOutSets[finalI][finalJ]));
+                animatorFlipInSets[finalI][finalJ].addListener(new AnimationListenerClass(cardViews[finalI][finalJ], animatorFlipOutSets[finalI][finalJ], animatorFlipOutSets[finalI][finalJ], R.drawable.colour1));
+                cardViews[finalI][finalJ].setTag(new PayLoad(finalI, finalJ));
                 cardViews[finalI][finalJ].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        switch (currentSelected) {
+                            case 0:
+                                selectedPayLoads[0] = (PayLoad) v.getTag();
+                                break;
+                            case 1:
+                                selectedPayLoads[1] = (PayLoad) v.getTag();
+                                break;
+                            default:
+                                break;
+
+                        }
+
+                        ++currentSelected;
+
                         animatorFlipInSets[finalI][finalJ].setTarget(v);
                         animatorFlipInSets[finalI][finalJ].start();
+
+                        if (currentSelected == 2) {
+                            ((AnimationListenerClass) animatorFlipInSets[finalI][finalJ].getListeners().get(0)).resetImages();
+                        }
                     }
                 });
             }
         }
-
-
     }
+
+    private PayLoad[] selectedPayLoads = new PayLoad[2];
+
+    class PayLoad {
+        public int row;
+        public int column;
+
+        public PayLoad(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+    }
+
+
+    private int currentSelected = 0;
 
     class AnimationListenerClass implements Animator.AnimatorListener {
 
         private AppCompatImageView appCompatImageView;
         private AnimatorSet animatorFlipInSet;
         private AnimatorSet animatorFlipOutSet;
+        private int colorBackground;
+        private boolean resetImages;
 
-        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorFlipInSet, AnimatorSet animatorFlipOutSet) {
+        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorFlipInSet, AnimatorSet animatorFlipOutSet, int colorBackground) {
             this.appCompatImageView = appCompatImageView;
             this.animatorFlipInSet = animatorFlipInSet;
             this.animatorFlipOutSet = animatorFlipOutSet;
+            this.colorBackground = colorBackground;
         }
 
         @Override
@@ -100,7 +137,7 @@ public class GameBoard extends Fragment {
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            appCompatImageView.setImageResource(R.drawable.colour1);
+            appCompatImageView.setImageResource(colorBackground);
             animatorFlipInSet.setTarget(appCompatImageView);
             animatorFlipInSet.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -110,8 +147,13 @@ public class GameBoard extends Fragment {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    appCompatImageView.setImageResource(R.drawable.card_bg);
-                    animatorFlipOutSet.setTarget(appCompatImageView);
+                    if (resetImages) {
+                        for (PayLoad payLoad : selectedPayLoads) {
+                            cardViews[payLoad.row][payLoad.column].setImageResource(R.drawable.card_bg);
+                        }
+                        currentSelected = 0;
+                    }
+                    resetImages = false;
                 }
 
                 @Override
@@ -135,6 +177,10 @@ public class GameBoard extends Fragment {
         @Override
         public void onAnimationRepeat(Animator animation) {
 
+        }
+
+        public void resetImages() {
+            this.resetImages = true;
         }
     }
 
