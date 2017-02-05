@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kanvalkalra.colormemory.R;
+import com.kanvalkalra.colormemory.game.helper.CardSet;
+import com.kanvalkalra.colormemory.utils.RandomGenUtils;
 
 
 public class GameBoard extends Fragment {
@@ -30,13 +32,17 @@ public class GameBoard extends Fragment {
         return inflater.inflate(R.layout.fragment_game_board, container, false);
     }
 
+
     AppCompatImageView[][] cardViews;
+    CardSet[] cardSets = new CardSet[8];
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         cardViews = new AppCompatImageView[4][4];
+
+        RandomGenUtils.getRandomCardSet(cardSets);
 
         cardViews[0][0] = (AppCompatImageView) view.findViewById(R.id.r1c1);
         cardViews[0][1] = (AppCompatImageView) view.findViewById(R.id.r1c2);
@@ -74,25 +80,28 @@ public class GameBoard extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        switch (currentSelected) {
-                            case 0:
-                                selectedPayLoads[0] = (PayLoad) v.getTag();
-                                break;
-                            case 1:
-                                selectedPayLoads[1] = (PayLoad) v.getTag();
-                                break;
-                            default:
-                                break;
+                        if (currentSelected < 2) {
+                            switch (currentSelected) {
+                                case 0:
+                                    selectedPayLoads[0] = (PayLoad) v.getTag();
+                                    break;
+                                case 1:
+                                    selectedPayLoads[1] = (PayLoad) v.getTag();
+                                    break;
+                                default:
+                                    break;
 
-                        }
+                            }
 
-                        ++currentSelected;
+                            ++currentSelected;
 
-                        animatorFlipInSets[finalI][finalJ].setTarget(v);
-                        animatorFlipInSets[finalI][finalJ].start();
+                            animatorFlipInSets[finalI][finalJ].setTarget(v);
+                            animatorFlipInSets[finalI][finalJ].start();
 
-                        if (currentSelected == 2) {
-                            ((AnimationListenerClass) animatorFlipInSets[finalI][finalJ].getListeners().get(0)).resetImages();
+                            if (currentSelected == 2) {
+                                ((AnimationListenerClass) animatorFlipInSets[finalI][finalJ].getListeners().get(0)).resetImages();
+//                                clickConsumer.setOnClickListener(consumerClickListener);
+                            }
                         }
                     }
                 });
@@ -153,6 +162,7 @@ public class GameBoard extends Fragment {
                         }
                         currentSelected = 0;
                     }
+//                    clickConsumer.setOnClickListener(null);
                     resetImages = false;
                 }
 
