@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ public class GameBoard extends Fragment {
 
     private String TAG = getClass().getSimpleName();
     private Handler handler;
+    private AppCompatTextView score;
+    private volatile int currentScore = 0;
 
     public GameBoard() {
         // Required empty public constructor
@@ -49,6 +52,9 @@ public class GameBoard extends Fragment {
         randomIntSequence = RandomGenUtils.getRandomCardSet();
 
         handler = new Handler();
+
+        score = (AppCompatTextView) view.findViewById(R.id.score);
+        score.setText(String.format("%d", currentScore));
 
         cardViews[0] = (AppCompatImageView) view.findViewById(R.id.r1c1);
         cardViews[1] = (AppCompatImageView) view.findViewById(R.id.r1c2);
@@ -171,18 +177,7 @@ public class GameBoard extends Fragment {
             this.appCompatImageView = appCompatImageView;
             this.animatorFlipInSet = animatorFlipInSet;
             this.colorBackground = colorBackground;
-        }
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            appCompatImageView.setImageResource(colorBackground);
-            animatorFlipInSet.setTarget(appCompatImageView);
-            animatorFlipInSet.addListener(new Animator.AnimatorListener() {
+            this.animatorFlipInSet.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
 
@@ -190,31 +185,48 @@ public class GameBoard extends Fragment {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    Executors.newSingleThreadExecutor().submit(new Runnable() {
-                        @Override
-                        public void run() {
+                    if (resetImages) {
+                        Executors.newSingleThreadExecutor().submit(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (resetImages) {
-                                        for (Integer payLoad : selectedPayLoads) {
-                                            cardViews[randomIntSequence[payLoad]].setImageResource(R.drawable.card_bg);
-                                        }
-                                        currentSelected = 0;
-                                    }
-                                    resetImages = false;
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
                                 }
-                            });
 
-                        }
-                    });
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (selectedPayLoads[0] == selectedPayLoads[1] - 1) {
+                                            if (selectedPayLoads[0] % 2 == 0) {
+                                                resetImages = resetCurrentImage(false);
+                                                currentScore = currentScore + 2;
+                                            } else {
+                                                resetImages = resetCurrentImage(true);
+                                                currentScore = currentScore - 1;
+                                            }
+                                        } else if (selectedPayLoads[0] == selectedPayLoads[1] + 1) {
+                                            if (selectedPayLoads[1] % 2 == 0) {
+                                                resetImages = resetCurrentImage(false);
+                                                currentScore = currentScore + 2;
+                                            } else {
+                                                resetImages = resetCurrentImage(true);
+                                                currentScore = currentScore - 1;
+                                            }
+                                        } else {
+                                            resetImages = resetCurrentImage(true);
+                                            currentScore = currentScore - 1;
+                                        }
+
+                                        score.setText(String.format("%d", currentScore / 2));
+                                    }
+                                });
+
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -227,6 +239,18 @@ public class GameBoard extends Fragment {
 
                 }
             });
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+//            animatorFlipInSet.removeAllListeners();
+            appCompatImageView.setImageResource(colorBackground);
+            animatorFlipInSet.setTarget(appCompatImageView);
             animatorFlipInSet.start();
         }
 
@@ -243,6 +267,21 @@ public class GameBoard extends Fragment {
         public void resetImages() {
             this.resetImages = true;
         }
+    }
+
+    private boolean resetCurrentImage(boolean setImageBackground) {
+        if (setImageBackground) {
+            for (Integer payLoad : selectedPayLoads) {
+                cardViews[randomIntSequence[payLoad]].setImageResource(R.drawable.card_bg);
+            }
+        } else {
+            for (Integer payLoad : selectedPayLoads) {
+                cardViews[randomIntSequence[payLoad]].setEnabled(false);
+                cardViews[randomIntSequence[payLoad]].setImageResource(R.color.white);
+            }
+        }
+        currentSelected = 0;
+        return false;
     }
 
 
