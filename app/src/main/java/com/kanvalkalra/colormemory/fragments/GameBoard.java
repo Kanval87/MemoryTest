@@ -4,15 +4,21 @@ package com.kanvalkalra.colormemory.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.kanvalkalra.colormemory.R;
 import com.kanvalkalra.colormemory.utils.RandomGenUtils;
@@ -27,6 +33,8 @@ public class GameBoard extends Fragment {
     private Handler handler;
     private AppCompatTextView score;
     private volatile int currentScore = 0;
+    private int totalMatched = 0;
+    private Dialog dialog_box;
 
     public GameBoard() {
         // Required empty public constructor
@@ -55,6 +63,31 @@ public class GameBoard extends Fragment {
 
         score = (AppCompatTextView) view.findViewById(R.id.score);
         score.setText(String.format("%d", currentScore));
+
+        dialog_box = new Dialog(getActivity());
+        dialog_box.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog_box.setContentView(R.layout.dialog_box);
+        final AppCompatEditText userinput = ((AppCompatEditText) dialog_box.findViewById(R.id.userinput));
+        final TextInputLayout userinput_error_handler = ((TextInputLayout) dialog_box.findViewById(R.id.userinput_error_handler));
+        ((AppCompatButton) dialog_box.findViewById(R.id.submit)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (userinput.getText().toString().contentEquals("")) {
+                    userinput_error_handler.setError(getString(R.string.name_input_error));
+                } else {
+                    dialog_box.dismiss();
+                }
+            }
+        });
+        dialog_box.setCanceledOnTouchOutside(false);
+        dialog_box.setCancelable(false);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        Window window = dialog_box.getWindow();
+        layoutParams.copyFrom(window.getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(layoutParams);
+        dialog_box.show();
 
         cardViews[0] = (AppCompatImageView) view.findViewById(R.id.r1c1);
         cardViews[1] = (AppCompatImageView) view.findViewById(R.id.r1c2);
@@ -248,7 +281,6 @@ public class GameBoard extends Fragment {
 
         @Override
         public void onAnimationEnd(Animator animation) {
-//            animatorFlipInSet.removeAllListeners();
             appCompatImageView.setImageResource(colorBackground);
             animatorFlipInSet.setTarget(appCompatImageView);
             animatorFlipInSet.start();
@@ -278,6 +310,21 @@ public class GameBoard extends Fragment {
             for (Integer payLoad : selectedPayLoads) {
                 cardViews[randomIntSequence[payLoad]].setEnabled(false);
                 cardViews[randomIntSequence[payLoad]].setImageResource(R.color.white);
+            }
+            ++totalMatched;
+            if (totalMatched > 15) {
+                if (dialog_box != null) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (dialog_box != null) {
+                                if (!dialog_box.isShowing()) {
+                                    dialog_box.show();
+                                }
+                            }
+                        }
+                    });
+                }
             }
         }
         currentSelected = 0;
