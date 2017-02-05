@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDefaultFragment() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, new GameBoard());
+        fragmentTransaction.replace(R.id.fragment_container, new GameBoard());
         fragmentTransaction.commit();
     }
 }

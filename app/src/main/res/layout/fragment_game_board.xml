@@ -6,11 +6,35 @@
     android:orientation="vertical"
     tools:context="com.kanvalkalra.colormemory.fragments.GameBoard">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorPrimaryDark">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left|start"
+            android:scaleType="center"
+            android:src="@drawable/logo" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/score"
+            android:textColor="#ffffff" />
+
+        <android.support.v7.widget.AppCompatButton
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|right|end"
+            android:text="@string/high_score" />
+
+    </FrameLayout>
 
 
     <FrameLayout
