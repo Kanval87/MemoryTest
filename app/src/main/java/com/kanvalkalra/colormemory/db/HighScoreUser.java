@@ -4,18 +4,16 @@ package com.kanvalkalra.colormemory.db;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table "HIGH_SCORE_USER".
  */
 public class HighScoreUser {
 
-    private Long id;
     /**
      * Not-null value.
      */
     private String name;
-    private short score;
+    private long score;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -23,43 +21,26 @@ public class HighScoreUser {
     public HighScoreUser() {
     }
 
-    public HighScoreUser(Long id) {
-        this.id = id;
-    }
-
-    public HighScoreUser(Long id, String name, short score) {
-        this.id = id;
+    public HighScoreUser(String name, long score) {
         this.name = name;
         this.score = score;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     public String getName() {
         return name;
     }
 
-    /**
-     * Not-null value; ensure this value is available before it is saved to the database.
-     */
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setName(String name) {
         this.name = name;
     }
 
-    public short getScore() {
+    public long getScore() {
         return score;
     }
 
-    public void setScore(short score) {
+    public void setScore(long score) {
         this.score = score;
     }
 

@@ -28,9 +28,8 @@ public class MainGenerator {
 
     private static Entity addHighScoreUser(Schema schema) {
         Entity highScoreUser = schema.addEntity("HighScoreUser");
-        highScoreUser.addIdProperty().primaryKey().autoincrement();
         highScoreUser.addStringProperty("name").notNull();
-        highScoreUser.addShortProperty("score").notNull();
+        highScoreUser.addLongProperty("score").notNull();
 
         return highScoreUser;
     }

@@ -21,6 +21,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.kanvalkalra.colormemory.R;
+import com.kanvalkalra.colormemory.db.DaoSession;
+import com.kanvalkalra.colormemory.db.HighScoreUser;
+import com.kanvalkalra.colormemory.global.data.App;
 import com.kanvalkalra.colormemory.utils.RandomGenUtils;
 
 import java.util.concurrent.Executors;
@@ -35,6 +38,7 @@ public class GameBoard extends Fragment {
     private volatile int currentScore = 0;
     private int totalMatched = 0;
     private Dialog dialog_box;
+    private AnimationListenerClass[] animationListenerClass;
 
     public GameBoard() {
         // Required empty public constructor
@@ -56,6 +60,7 @@ public class GameBoard extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         cardViews = new AppCompatImageView[16];
+        animationListenerClass = new AnimationListenerClass[16];
 
         randomIntSequence = RandomGenUtils.getRandomCardSet();
 
@@ -72,9 +77,17 @@ public class GameBoard extends Fragment {
         ((AppCompatButton) dialog_box.findViewById(R.id.submit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (userinput.getText().toString().contentEquals("")) {
+                String userName = userinput.getText().toString();
+                if (userName.contentEquals("")) {
                     userinput_error_handler.setError(getString(R.string.name_input_error));
                 } else {
+                    DaoSession daoSession = ((App) getActivity().getApplication()).getDaoSession();
+                    HighScoreUser highScoreUser = new HighScoreUser();
+                    highScoreUser.setName(userName);
+                    highScoreUser.setScore(currentScore / 2);
+                    daoSession.getHighScoreUserDao().insert(highScoreUser);
+                    userinput.setText("");
+                    resetCards();
                     dialog_box.dismiss();
                 }
             }
@@ -117,46 +130,41 @@ public class GameBoard extends Fragment {
             animatorFlipInSets[i] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_in);
             animatorFlipOutSets[i] = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.flip_out);
 
+            animationListenerClass[i] = new AnimationListenerClass();
+            animatorFlipInSets[i].addListener(animationListenerClass[i]);
+
             switch (i) {
                 case 0:
                 case 1:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour7));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour7));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour1);
                     break;
                 case 2:
                 case 3:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour8));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour8));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour2);
                     break;
                 case 4:
                 case 5:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour1));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour1));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour3);
                     break;
                 case 6:
                 case 7:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour2));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour2));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour4);
                     break;
                 case 8:
                 case 9:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour3));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour3));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour5);
                     break;
                 case 10:
                 case 11:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour4));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour4));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour6);
                     break;
                 case 12:
                 case 13:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour5));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour5));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour7);
                     break;
                 case 14:
                 case 15:
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour6));
-                    animatorFlipInSets[i].addListener(new AnimationListenerClass(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour6));
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], animatorFlipOutSets[i], R.drawable.colour8);
                     break;
             }
 
@@ -194,6 +202,52 @@ public class GameBoard extends Fragment {
         }
     }
 
+    private void resetCards() {
+        totalMatched = 0;
+        currentSelected = 0;
+        currentScore = 0;
+        randomIntSequence = RandomGenUtils.getRandomCardSet();
+        score.setText(String.format("%d", currentScore));
+        for (int i = 0; i < randomIntSequence.length; i++) {
+            final int finalI = i;
+            cardViews[randomIntSequence[finalI]].setTag(finalI);
+            switch (i) {
+                case 0:
+                case 1:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour1);
+                    break;
+                case 2:
+                case 3:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour2);
+                    break;
+                case 4:
+                case 5:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour3);
+                    break;
+                case 6:
+                case 7:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour4);
+                    break;
+                case 8:
+                case 9:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour5);
+                    break;
+                case 10:
+                case 11:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour6);
+                    break;
+                case 12:
+                case 13:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour7);
+                    break;
+                case 14:
+                case 15:
+                    animationListenerClass[i].setData(cardViews[randomIntSequence[i]], R.drawable.colour8);
+                    break;
+            }
+        }
+    }
+
     private Integer[] selectedPayLoads = new Integer[2];
 
 
@@ -206,8 +260,40 @@ public class GameBoard extends Fragment {
         private int colorBackground;
         private boolean resetImages;
 
-        public AnimationListenerClass(AppCompatImageView appCompatImageView, AnimatorSet animatorFlipInSet, int colorBackground) {
+        public AnimationListenerClass() {
+        }
+
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            appCompatImageView.setImageResource(colorBackground);
+            animatorFlipInSet.setTarget(appCompatImageView);
+            animatorFlipInSet.start();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+
+        public void resetImages() {
+            this.resetImages = true;
+        }
+
+        public void setData(AppCompatImageView appCompatImageView, AnimatorSet animatorFlipInSet, int colorBackground) {
             this.appCompatImageView = appCompatImageView;
+            this.appCompatImageView.setImageResource(R.drawable.card_bg);
+            this.appCompatImageView.setEnabled(true);
             this.animatorFlipInSet = animatorFlipInSet;
             this.colorBackground = colorBackground;
             this.animatorFlipInSet.addListener(new Animator.AnimatorListener() {
@@ -253,7 +339,7 @@ public class GameBoard extends Fragment {
                                             currentScore = currentScore - 1;
                                         }
 
-                                        score.setText(String.format("%d", currentScore / 2));
+                                        score.setText(String.format("%d", currentScore));
                                     }
                                 });
 
@@ -274,30 +360,11 @@ public class GameBoard extends Fragment {
             });
         }
 
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            appCompatImageView.setImageResource(colorBackground);
-            animatorFlipInSet.setTarget(appCompatImageView);
-            animatorFlipInSet.start();
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
-
-        public void resetImages() {
-            this.resetImages = true;
+        public void setData(AppCompatImageView appCompatImageView, int colorBackground) {
+            this.appCompatImageView = appCompatImageView;
+            this.appCompatImageView.setImageResource(R.drawable.card_bg);
+            this.appCompatImageView.setEnabled(true);
+            this.colorBackground = colorBackground;
         }
     }
 
@@ -312,7 +379,7 @@ public class GameBoard extends Fragment {
                 cardViews[randomIntSequence[payLoad]].setImageResource(R.color.white);
             }
             ++totalMatched;
-            if (totalMatched > 15) {
+            if (totalMatched > 7) {
                 if (dialog_box != null) {
                     handler.post(new Runnable() {
                         @Override

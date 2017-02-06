@@ -13,7 +13,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 /**
  * DAO for table "HIGH_SCORE_USER".
  */
-public class HighScoreUserDao extends AbstractDao<HighScoreUser, Long> {
+public class HighScoreUserDao extends AbstractDao<HighScoreUser, Void> {
 
     public static final String TABLENAME = "HIGH_SCORE_USER";
 
@@ -22,9 +22,8 @@ public class HighScoreUserDao extends AbstractDao<HighScoreUser, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Score = new Property(2, short.class, "score", false, "SCORE");
+        public final static Property Name = new Property(0, String.class, "name", false, "NAME");
+        public final static Property Score = new Property(1, long.class, "score", false, "SCORE");
     }
 
     ;
@@ -42,94 +41,68 @@ public class HighScoreUserDao extends AbstractDao<HighScoreUser, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"HIGH_SCORE_USER\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"NAME\" TEXT NOT NULL ," + // 1: name
-                "\"SCORE\" INTEGER NOT NULL );"); // 2: score
+                "\"NAME\" TEXT NOT NULL ," + // 0: name
+                "\"SCORE\" INTEGER NOT NULL );"); // 1: score
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"HIGH_SCORE_USER\"";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, HighScoreUser entity) {
         stmt.clearBindings();
-
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
-        stmt.bindString(2, entity.getName());
-        stmt.bindLong(3, entity.getScore());
+        stmt.bindString(1, entity.getName());
+        stmt.bindLong(2, entity.getScore());
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public Void readKey(Cursor cursor, int offset) {
+        return null;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public HighScoreUser readEntity(Cursor cursor, int offset) {
         HighScoreUser entity = new HighScoreUser( //
-                cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-                cursor.getString(offset + 1), // name
-                cursor.getShort(offset + 2) // score
+                cursor.getString(offset + 0), // name
+                cursor.getLong(offset + 1) // score
         );
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, HighScoreUser entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setName(cursor.getString(offset + 1));
-        entity.setScore(cursor.getShort(offset + 2));
+        entity.setName(cursor.getString(offset + 0));
+        entity.setScore(cursor.getLong(offset + 1));
+    }
+
+    /** @inheritdoc */
+    @Override
+    protected Void updateKeyAfterInsert(HighScoreUser entity, long rowId) {
+        // Unsupported or missing PK type
+        return null;
+    }
+
+    /** @inheritdoc */
+    @Override
+    public Void getKey(HighScoreUser entity) {
+        return null;
     }
 
     /**
      * @inheritdoc
      */
-    @Override
-    protected Long updateKeyAfterInsert(HighScoreUser entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    @Override
-    public Long getKey(HighScoreUser entity) {
-        if (entity != null) {
-            return entity.getId();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }
