@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.kanvalkalra.colormemory.MainActivity;
 import com.kanvalkalra.colormemory.R;
 import com.kanvalkalra.colormemory.db.DaoSession;
 import com.kanvalkalra.colormemory.db.HighScoreUser;
@@ -101,6 +102,14 @@ public class GameBoard extends Fragment {
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(layoutParams);
         dialog_box.show();
+
+        AppCompatButton highscore = (AppCompatButton) view.findViewById(R.id.highscore);
+        highscore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).openHighScoreFragment();
+            }
+        });
 
         cardViews[0] = (AppCompatImageView) view.findViewById(R.id.r1c1);
         cardViews[1] = (AppCompatImageView) view.findViewById(R.id.r1c2);
