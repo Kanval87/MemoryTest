@@ -38,7 +38,13 @@ public class HighScore extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ArrayList<HighScoreUser> highScoreUsers = (ArrayList<HighScoreUser>) ((App) getActivity().getApplication()).getDaoSession().getHighScoreUserDao().loadAll();
+        ArrayList<HighScoreUser> highScoreUsers = null;
+        try {
+            highScoreUsers = (ArrayList<HighScoreUser>) ((App) getActivity().getApplication()).getDaoSession().getHighScoreUserDao().loadAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         recyclerView.setAdapter(new HighScoreAdapter(highScoreUsers));
     }

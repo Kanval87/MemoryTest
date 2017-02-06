@@ -6,6 +6,7 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,7 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.kanvalkalra.colormemory.MainActivity;
+import com.kanvalkalra.colormemory.HighScoreActivity;
 import com.kanvalkalra.colormemory.R;
 import com.kanvalkalra.colormemory.db.DaoSession;
 import com.kanvalkalra.colormemory.db.HighScoreUser;
@@ -90,6 +91,7 @@ public class GameBoard extends Fragment {
                     userinput.setText("");
                     resetCards();
                     dialog_box.dismiss();
+
                 }
             }
         });
@@ -101,13 +103,13 @@ public class GameBoard extends Fragment {
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(layoutParams);
-        dialog_box.show();
 
         AppCompatButton highscore = (AppCompatButton) view.findViewById(R.id.highscore);
         highscore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).openHighScoreFragment();
+                Intent intent = new Intent(getActivity(), HighScoreActivity.class);
+                startActivity(intent);
             }
         });
 
