@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.kanvalkalra.colormemory.R;
 import com.kanvalkalra.colormemory.db.HighScoreUser;
+import com.kanvalkalra.colormemory.db.HighScoreUserDao;
 import com.kanvalkalra.colormemory.fragments.adapter.HighScoreAdapter;
 import com.kanvalkalra.colormemory.global.data.App;
 
@@ -40,7 +41,7 @@ public class HighScore extends Fragment {
 
         ArrayList<HighScoreUser> highScoreUsers = null;
         try {
-            highScoreUsers = (ArrayList<HighScoreUser>) ((App) getActivity().getApplication()).getDaoSession().getHighScoreUserDao().loadAll();
+            highScoreUsers = (ArrayList<HighScoreUser>) ((App) getActivity().getApplication()).getDaoSession().getHighScoreUserDao().queryBuilder().orderDesc(HighScoreUserDao.Properties.Score).build().list();
         } catch (Exception e) {
             e.printStackTrace();
         }
